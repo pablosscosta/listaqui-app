@@ -1,0 +1,13 @@
+# Python
+__pycache__/
+*.pyc
+.venv/
+
+# Django-specific
+db.sqlite3
+media/
+static/
+
+# IDEs
+.idea/
+.vscode/
