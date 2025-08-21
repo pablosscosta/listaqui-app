@@ -3,8 +3,8 @@ from .user import User
 from .house import House
 
 class HouseUser(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='house_membership')
-    house = models.ForeignKey(House, on_delete=models.CASCADE, related_name='members')
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='house_memberships')
+    house = models.ForeignKey(House, on_delete=models.CASCADE)
     is_admin = models.BooleanField(default=False)
     
     class Meta:

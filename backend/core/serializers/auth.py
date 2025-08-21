@@ -19,10 +19,13 @@ class RegisterSerializer(serializers.ModelSerializer):
         return user
 
 class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
-    @classmethod
-    def get_token(cls, user):
-        token = super().get_token(user)
+    username_field = 'email'
 
-        # Adiciona campos customizados ao token
-        token['email'] = user.email
-        return token
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields[self.username_field] = serializers.CharField()
+        self.fields['password'] = serializers.CharField(write_only=True)
+
+    def validate(self, attrs):
+        attrs['username'] = attrs['email']
+        return super().validate(attrs)

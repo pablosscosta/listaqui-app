@@ -1,21 +1,26 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { Routes, Route } from 'react-router-dom';
+import PrivateRoute from './PrivateRoute';
 import LandingPage from './pages/LandingPage';
 import LoginPage from './pages/LoginPage';
 import SignupPage from './pages/SignupPage';
 import ChooseHousePage from './pages/ChooseHousePage';
-import './index.css'; // Importa os estilos do Tailwind
+import DashboardPage from './pages/DashboardPage'
+import './index.css';
 
 function App() {
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<LandingPage />} />
-        <Route path="/login" element={<LoginPage />} />
-        <Route path="/signup" element={<SignupPage />} />
+    <Routes>
+      {/* Rotas públicas */}
+      <Route path="/login" element={<LoginPage />} />
+      <Route path="/signup" element={<SignupPage />} />
+      <Route path="/" element={<LandingPage />} />
+
+      {/* Rotas protegidas */}
+      <Route element={<PrivateRoute />}>
+        <Route path="/dashboard" element={<DashboardPage />} />
         <Route path="/choose-house" element={<ChooseHousePage />} />
-        {/* Futuramente, outras rotas como /login e /signup virão aqui */}
-      </Routes>
-    </BrowserRouter>
+      </Route>
+    </Routes>
   );
 }
 
