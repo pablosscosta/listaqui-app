@@ -15,10 +15,8 @@ export const AuthProvider = ({ children }) => {
     });
     const navigate = useNavigate();
     
-    // Este useEffect agora é usado apenas para a lógica de expiração, se necessário
-    // A lógica de inicialização foi movida para o useState
     useEffect(() => {
-        // Lógica para verificar a validade do token de acesso, se desejar
+        // Lógica de token para ser adicionada no futuro, se necessário
     }, []);
 
     const isAuthenticated = !!tokens.access;
@@ -40,7 +38,15 @@ export const AuthProvider = ({ children }) => {
         }
     };
 
-    const value = { user, isAuthenticated, tokens, login };
+    const logout = () => {
+        localStorage.removeItem('access');
+        localStorage.removeItem('refresh');
+        setTokens({ access: null, refresh: null });
+        setUser(null);
+        navigate('/login');
+    };
+
+    const value = { user, isAuthenticated, tokens, login, logout };
 
     return (
         <AuthContext.Provider value={value}>
