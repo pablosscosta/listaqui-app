@@ -8,6 +8,9 @@ class HouseViewSet(viewsets.ModelViewSet):
     serializer_class = HouseSerializer
     permission_classes = [IsAuthenticated]
 
+    def get_queryset(self):
+        return House.objects.filter(members=self.request.user)
+
     def perform_create(self, serializer):
         house = serializer.save()
         house.members.add(self.request.user)
