@@ -3,20 +3,22 @@ import axios from 'axios';
 import { useAuth } from '../AuthContext';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
+import HouseCard from '../components/HouseCard';
+import JoinHouseForm from '../components/JoinHouseForm';
+import CreateHouseForm from '../components/CreateHouseForm';
 
 const DashboardPage = () => {
     const { isAuthenticated, tokens } = useAuth();
     const [houses, setHouses] = useState([]);
     const [error, setError] = useState('');
+    const [isCreating, setIsCreating] = useState(true);
+    const [reloadHouses, setReloadHouses] = useState(false);
 
     useEffect(() => {
         const fetchHouses = async () => {
             if (!isAuthenticated || !tokens || !tokens.access) {
-                console.log("Condição de retorno foi acionada. isAuthenticated:", isAuthenticated, "tokens:", tokens);
                 return;
             }
-
-            console.log("Fazendo requisição com o token:", tokens.access);
 
             try {
                 const response = await axios.get('http://127.0.0.1:8000/api/houses/', {
@@ -32,7 +34,11 @@ const DashboardPage = () => {
         };
 
         fetchHouses();
-    }, [isAuthenticated, tokens]);
+    }, [isAuthenticated, tokens, reloadHouses]);
+
+    const handleHouseJoined = () => {
+        setReloadHouses(prev => !prev);
+    };
 
     if (error) {
         return <div className="text-red-500 text-center mt-8">{error}</div>;
@@ -43,23 +49,37 @@ const DashboardPage = () => {
             <Header />
             <main className="flex-1 container mx-auto p-4">
                 <h1 className="text-3xl font-bold text-center my-6">Seus Grupos</h1>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {houses.length > 0 ? (
-                        houses.map(house => (
-                            <div key={house.id} className="bg-white rounded-lg shadow-md p-6">
-                                <h2 className="text-2xl font-semibold text-gray-800">{house.name}</h2>
-                                <p className="text-gray-500">Código: {house.code}</p>
-                                <ul className="mt-4 space-y-2">
-                                    {/* Aqui você pode adicionar a lógica para exibir as listas */}
-                                </ul>
-                            </div>
-                        ))
-                    ) : (
-                        <p className="col-span-full text-center text-gray-500">
-                            Nenhum grupo encontrado.
-                        </p>
-                    )}
+                
+                <div className="flex justify-center space-x-4 mb-8">
+                    <button
+                        onClick={() => setIsCreating(true)}
+                        className={`px-4 py-2 font-bold rounded-lg focus:outline-none ${isCreating ? 'bg-blue-500 text-white' : 'bg-gray-200 text-gray-800'}`}
+                    >
+                        Criar Casa
+                    </button>
+                    <button
+                        onClick={() => setIsCreating(false)}
+                        className={`px-4 py-2 font-bold rounded-lg focus:outline-none ${!isCreating ? 'bg-green-500 text-white' : 'bg-gray-200 text-gray-800'}`}
+                    >
+                        Entrar em uma Casa
+                    </button>
                 </div>
+                
+                <div className="flex justify-center mb-8">
+                    {isCreating ? <CreateHouseForm /> : <JoinHouseForm onHouseJoined={handleHouseJoined} />}
+                </div>
+
+                {houses.length > 0 ? (
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        {houses.map(house => (
+                            <HouseCard key={house.id} house={house} />
+                        ))}
+                    </div>
+                ) : (
+                    <p className="col-span-full text-center text-gray-500">
+                        Nenhum grupo encontrado.
+                    </p>
+                )}
             </main>
             <Footer />
         </div>
