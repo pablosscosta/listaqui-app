@@ -36,7 +36,7 @@ const DashboardPage = () => {
         fetchHouses();
     }, [isAuthenticated, tokens, reloadHouses]);
 
-    const handleHouseJoined = () => {
+    const handleListCreated = () => {
         setReloadHouses(prev => !prev);
     };
 
@@ -66,13 +66,13 @@ const DashboardPage = () => {
                 </div>
                 
                 <div className="flex justify-center mb-8">
-                    {isCreating ? <CreateHouseForm /> : <JoinHouseForm onHouseJoined={handleHouseJoined} />}
+                    {isCreating ? <CreateHouseForm /> : <JoinHouseForm onHouseJoined={handleListCreated} />}
                 </div>
 
                 {houses.length > 0 ? (
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                         {houses.map(house => (
-                            <HouseCard key={house.id} house={house} />
+                            <HouseCard key={house.id} house={house} onListCreated={handleListCreated} />
                         ))}
                     </div>
                 ) : (
