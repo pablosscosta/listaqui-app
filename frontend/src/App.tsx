@@ -4,7 +4,9 @@ import LandingPage from './pages/LandingPage';
 import LoginPage from './pages/LoginPage';
 import SignupPage from './pages/SignupPage';
 import ChooseHousePage from './pages/ChooseHousePage';
-import DashboardPage from './pages/DashboardPage'
+import DashboardPage from './pages/DashboardPage';
+import HouseDetailsPage from './pages/HouseDetailsPage';
+import CreateHousePage from './pages/CreateHousePage'; // Importe a nova página
 import './index.css';
 
 function App() {
@@ -19,6 +21,8 @@ function App() {
       <Route element={<PrivateRoute />}>
         <Route path="/dashboard" element={<DashboardPage />} />
         <Route path="/choose-house" element={<ChooseHousePage />} />
+        <Route path="/houses/:id" element={<HouseDetailsPage />} />
+        <Route path="/create-house" element={<CreateHousePage />} /> {/* Adicione esta linha */}
       </Route>
     </Routes>
   );

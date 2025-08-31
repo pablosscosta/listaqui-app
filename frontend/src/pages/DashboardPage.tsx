@@ -1,87 +1,67 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useAuth } from '../AuthContext';
-import Header from '../components/Header';
-import Footer from '../components/Footer';
 import HouseCard from '../components/HouseCard';
-import JoinHouseForm from '../components/JoinHouseForm';
-import CreateHouseForm from '../components/CreateHouseForm';
+import { useNavigate, Link } from 'react-router-dom';
 
 const DashboardPage = () => {
-    const { isAuthenticated, tokens } = useAuth();
+    const { tokens, logout } = useAuth();
     const [houses, setHouses] = useState([]);
-    const [error, setError] = useState('');
-    const [isCreating, setIsCreating] = useState(true);
-    const [reloadHouses, setReloadHouses] = useState(false);
+    const navigate = useNavigate();
 
-    useEffect(() => {
-        const fetchHouses = async () => {
-            if (!isAuthenticated || !tokens || !tokens.access) {
-                return;
-            }
+    const fetchHouses = async () => {
+        if (!tokens || !tokens.access) {
+            return;
+        }
 
-            try {
-                const response = await axios.get('http://127.0.0.1:8000/api/houses/', {
-                    headers: {
-                        'Authorization': `Bearer ${tokens.access}`
-                    }
-                });
-                setHouses(response.data);
-            } catch (err) {
-                console.error('Failed to fetch houses:', err);
-                setError('Failed to load houses. Please try again.');
-            }
-        };
-
-        fetchHouses();
-    }, [isAuthenticated, tokens, reloadHouses]);
-
-    const handleListCreated = () => {
-        setReloadHouses(prev => !prev);
+        try {
+            const response = await axios.get('http://127.0.0.1:8000/api/houses/', {
+                headers: {
+                    'Authorization': `Bearer ${tokens.access}`
+                }
+            });
+            setHouses(response.data);
+        } catch (err) {
+            console.error('Failed to fetch houses:', err);
+        }
     };
 
-    if (error) {
-        return <div className="text-red-500 text-center mt-8">{error}</div>;
-    }
+    useEffect(() => {
+        fetchHouses();
+    }, [tokens]);
 
     return (
-        <div className="flex flex-col min-h-screen">
-            <Header />
-            <main className="flex-1 container mx-auto p-4">
-                <h1 className="text-3xl font-bold text-center my-6">Seus Grupos</h1>
-                
-                <div className="flex justify-center space-x-4 mb-8">
-                    <button
-                        onClick={() => setIsCreating(true)}
-                        className={`px-4 py-2 font-bold rounded-lg focus:outline-none ${isCreating ? 'bg-blue-500 text-white' : 'bg-gray-200 text-gray-800'}`}
+        <div className="min-h-screen bg-gray-100 p-8">
+            <div className="flex justify-between items-center mb-6">
+                <h1 className="text-3xl font-bold text-gray-800">Suas Casas</h1>
+                <div className="flex gap-4">
+                    <Link
+                        to="/create-house"
+                        className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
                     >
-                        Criar Casa
-                    </button>
+                        Criar Nova Casa
+                    </Link>
                     <button
-                        onClick={() => setIsCreating(false)}
-                        className={`px-4 py-2 font-bold rounded-lg focus:outline-none ${!isCreating ? 'bg-green-500 text-white' : 'bg-gray-200 text-gray-800'}`}
+                        onClick={logout}
+                        className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
                     >
-                        Entrar em uma Casa
+                        Sair
                     </button>
                 </div>
-                
-                <div className="flex justify-center mb-8">
-                    {isCreating ? <CreateHouseForm /> : <JoinHouseForm onHouseJoined={handleListCreated} />}
-                </div>
+            </div>
 
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {houses.length > 0 ? (
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                        {houses.map(house => (
-                            <HouseCard key={house.id} house={house} onListCreated={handleListCreated} />
-                        ))}
-                    </div>
+                    houses.map(house => (
+                        <HouseCard
+                            key={house.id}
+                            house={house}
+                        />
+                    ))
                 ) : (
-                    <p className="col-span-full text-center text-gray-500">
-                        Nenhum grupo encontrado.
-                    </p>
+                    <p className="text-gray-500">Nenhuma casa encontrada.</p>
                 )}
-            </main>
-            <Footer />
+            </div>
         </div>
     );
 };
