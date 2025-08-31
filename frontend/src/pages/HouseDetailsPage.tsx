@@ -39,7 +39,7 @@ const HouseDetailsPage = () => {
         <div className="container mx-auto p-4">
             <h1 className="text-3xl font-bold mb-4">{house.name}</h1>
             <p className="text-gray-600 mb-2">Código: {house.code}</p>
-            <p className="text-gray-600 mb-4">Membros: {house.members.join(', ')}</p>
+            <p className="text-gray-600 mb-4">Membros: {house.members.map(member => member.name).join(', ')}</p>
             <Link to="/dashboard" className="text-blue-500 hover:underline mb-4 block">
                 &larr; Voltar para a Dashboard
             </Link>

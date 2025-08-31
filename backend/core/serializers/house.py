@@ -1,8 +1,9 @@
 from rest_framework import serializers
 from ..models import House
+from .user import UserSerializer # Importe o UserSerializer
 
 class HouseSerializer(serializers.ModelSerializer):
-    members = serializers.PrimaryKeyRelatedField(many=True, read_only=True)
+    members = UserSerializer(many=True, read_only=True)
     
     class Meta:
         model = House
