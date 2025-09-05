@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useParams, Link } from 'react-router-dom';
 import { useAuth } from '../AuthContext';
+import Header from '../components/Header';
+import Footer from '../components/Footer';
 
 const HouseDetailsPage = () => {
     const { id } = useParams();
@@ -36,26 +38,42 @@ const HouseDetailsPage = () => {
     }
 
     return (
-        <div className="container mx-auto p-4">
-            <h1 className="text-3xl font-bold mb-4">{house.name}</h1>
-            <p className="text-gray-600 mb-2">Código: {house.code}</p>
-            <p className="text-gray-600 mb-4">Membros: {house.members.map(member => member.name).join(', ')}</p>
-            <Link to="/dashboard" className="text-blue-500 hover:underline mb-4 block">
-                &larr; Voltar para a Dashboard
-            </Link>
+        <div className="flex flex-col min-h-screen bg-gray-50">
+            <Header />
 
-            <h2 className="text-2xl font-semibold mt-6 mb-2">Listas</h2>
-            {lists.length > 0 ? (
-                <ul className="list-disc list-inside">
-                    {lists.map(list => (
-                        <li key={list.id} className="text-gray-700">
-                            {list.title} - {list.list_type}
-                        </li>
-                    ))}
-                </ul>
-            ) : (
-                <p className="text-gray-500">Nenhuma lista encontrada.</p>
-            )}
+            <main className="flex-1 container mx-auto p-4 md:p-8">
+                <div className="bg-white rounded-lg shadow-lg p-6 md:p-8">
+                    {/* Botão de voltar */}
+                    <Link
+                        to="/dashboard"
+                        className="inline-block mb-6 px-6 py-3 bg-blue-600 text-white font-bold rounded-lg hover:bg-blue-700 transition-colors duration-300"
+                    >
+                        &larr; Voltar para a Dashboard
+                    </Link>
+
+                    {/* Informações da Casa */}
+                    <h1 className="text-4xl font-extrabold text-gray-900 mb-2">{house.name}</h1>
+                    <p className="text-gray-600 mb-1">Código: <span className="font-mono text-sm bg-gray-200 px-2 py-1 rounded">{house.code}</span></p>
+                    <p className="text-gray-600 mb-6">Membros: <span className="text-gray-900 font-medium">{house.members.map(member => member.name).join(', ')}</span></p>
+                    
+                    {/* Seção de Listas */}
+                    <h2 className="text-2xl font-bold text-gray-900 mt-8 mb-4">Listas</h2>
+                    {lists.length > 0 ? (
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                            {lists.map(list => (
+                                <div key={list.id} className="bg-gray-100 rounded-lg p-4 hover:shadow-md transition-shadow duration-300">
+                                    <h3 className="text-xl font-semibold text-gray-900 mb-1">{list.title}</h3>
+                                    <p className="text-sm text-gray-500 capitalize">{list.list_type}</p>
+                                </div>
+                            ))}
+                        </div>
+                    ) : (
+                        <p className="text-gray-500">Nenhuma lista encontrada.</p>
+                    )}
+                </div>
+            </main>
+
+            <Footer />
         </div>
     );
 };
