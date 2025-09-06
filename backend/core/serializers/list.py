@@ -1,13 +1,11 @@
 from rest_framework import serializers
-from ..models.list import List
-from ..models.house import House
-from ..serializers.house import HouseSerializer
+from ..models import List
+from .item import ItemSerializer
 
 class ListSerializer(serializers.ModelSerializer):
-    house = HouseSerializer(read_only=True)
-    list_type = serializers.CharField(source='get_list_type_display')
-
+    items = ItemSerializer(many=True, read_only=True)
+    
     class Meta:
         model = List
-        fields = ['id', 'title', 'list_type', 'house']
+        fields = ['id', 'title', 'list_type', 'house', 'items']
         read_only_fields = ['house']

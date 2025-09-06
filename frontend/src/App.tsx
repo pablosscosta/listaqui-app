@@ -6,8 +6,8 @@ import SignupPage from './pages/SignupPage';
 import ChooseHousePage from './pages/ChooseHousePage';
 import DashboardPage from './pages/DashboardPage';
 import HouseDetailsPage from './pages/HouseDetailsPage';
-import CreateHousePage from './pages/CreateHousePage'; // Importe a nova página
-import './index.css';
+import CreateHousePage from './pages/CreateHousePage'; 
+import ListPage from './pages/ListPage'; // Importe a nova página
 
 function App() {
   return (
@@ -22,7 +22,9 @@ function App() {
         <Route path="/dashboard" element={<DashboardPage />} />
         <Route path="/choose-house" element={<ChooseHousePage />} />
         <Route path="/houses/:id" element={<HouseDetailsPage />} />
-        <Route path="/create-house" element={<CreateHousePage />} /> {/* Adicione esta linha */}
+        <Route path="/create-house" element={<CreateHousePage />} />
+        {/* Nova rota para a página de detalhes da lista */}
+        <Route path="/houses/:houseId/lists/:listId" element={<ListPage />} />
       </Route>
     </Routes>
   );
