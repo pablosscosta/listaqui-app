@@ -9,15 +9,39 @@ export const AuthProvider = ({ children }) => {
     const storedRefresh = localStorage.getItem('refresh');
 
     const [user, setUser] = useState(storedAccess ? { email: '' } : null);
-    const [tokens, setTokens] = useState({ 
-        access: storedAccess, 
-        refresh: storedRefresh 
+    const [tokens, setTokens] = useState({
+        access: storedAccess,
+        refresh: storedRefresh
     });
     const navigate = useNavigate();
     
+    const logout = (message) => {
+        localStorage.removeItem('access');
+        localStorage.removeItem('refresh');
+        setTokens({ access: null, refresh: null });
+        setUser(null);
+        if (message) {
+            sessionStorage.setItem('logoutMessage', message);
+        }
+        navigate('/login');
+    };
+
+    // Adiciona um interceptor de resposta para lidar com a expiração do token
     useEffect(() => {
-        // Lógica de token para ser adicionada no futuro, se necessário
-    }, []);
+        const interceptor = axios.interceptors.response.use(
+            response => response,
+            error => {
+                if (error.response && error.response.status === 401) {
+                    logout('Sessão expirada. Por favor, faça login novamente.');
+                }
+                return Promise.reject(error);
+            }
+        );
+
+        return () => {
+            axios.interceptors.response.eject(interceptor);
+        };
+    }, [logout]);
 
     const isAuthenticated = !!tokens.access;
 
@@ -30,20 +54,12 @@ export const AuthProvider = ({ children }) => {
             localStorage.setItem('refresh', refresh);
             
             setTokens({ access, refresh });
-            setUser({ email: credentials.email });
+            setUser({ email: credentials.username });
             
             navigate('/dashboard');
         } catch (error) {
             console.error('Login failed:', error);
         }
-    };
-
-    const logout = () => {
-        localStorage.removeItem('access');
-        localStorage.removeItem('refresh');
-        setTokens({ access: null, refresh: null });
-        setUser(null);
-        navigate('/login');
     };
 
     const value = { user, isAuthenticated, tokens, login, logout };

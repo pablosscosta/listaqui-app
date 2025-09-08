@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import { useAuth } from '../AuthContext';
@@ -7,6 +7,16 @@ import { Link } from 'react-router-dom';
 const LoginPage = () => {
   const [credentials, setCredentials] = useState({ email: '', password: '' });
   const { login } = useAuth();
+  const [displayMessage, setDisplayMessage] = useState('');
+
+  // Use useEffect para ler a mensagem do sessionStorage
+  useEffect(() => {
+      const message = sessionStorage.getItem('logoutMessage');
+      if (message) {
+          setDisplayMessage(message);
+          sessionStorage.removeItem('logoutMessage'); // Limpa a mensagem após lê-la
+      }
+  }, []);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -28,6 +38,13 @@ const LoginPage = () => {
       <main className="flex-1 flex items-center justify-center p-4">
         <div className="w-full max-w-md p-8 space-y-6 bg-white rounded-lg shadow-md">
           <h2 className="text-3xl font-bold text-center text-gray-900">Entrar</h2>
+
+          {displayMessage && (
+            <div className="p-4 text-sm text-center text-yellow-700 bg-yellow-100 rounded-lg">
+              {displayMessage}
+            </div>
+          )}
+
           <form className="space-y-6" onSubmit={handleSubmit}>
             <div>
               <label htmlFor="email" className="block text-sm font-medium text-gray-700">
