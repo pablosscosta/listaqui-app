@@ -9,6 +9,7 @@ class ItemViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         list_pk = self.kwargs['list_pk']
+        # Agora o back-end retorna todos os itens de uma lista
         return Item.objects.filter(list__pk=list_pk)
 
     def perform_create(self, serializer):

@@ -10,6 +10,9 @@ const ListPage = () => {
     const { tokens } = useAuth();
     const [list, setList] = useState(null);
     const [newItem, setNewItem] = useState({ name: '', quantity: 1, price: 0 });
+    const [editingItemId, setEditingItemId] = useState(null);
+    const [editedItemName, setEditedItemName] = useState('');
+    const [editedItemQuantity, setEditedItemQuantity] = useState(1); // NOVO estado para a quantidade
 
     useEffect(() => {
         if (!tokens || !houseId || !listId) return;
@@ -55,6 +58,98 @@ const ListPage = () => {
         } catch (error) {
             console.error("Failed to add new item:", error);
         }
+    };
+
+    const handleCompleteItem = async (itemId) => {
+        try {
+            const itemToUpdate = list.items.find(item => item.id === itemId);
+            const newCompletedStatus = !itemToUpdate.is_completed;
+
+            await axios.patch(`http://127.0.0.1:8000/api/houses/${houseId}/lists/${listId}/items/${itemId}/`, {
+                is_completed: newCompletedStatus
+            }, {
+                headers: { 'Authorization': `Bearer ${tokens.access}` }
+            });
+
+            setList(prevList => ({
+                ...prevList,
+                items: prevList.items.map(item =>
+                    item.id === itemId ? { ...item, is_completed: newCompletedStatus } : item
+                )
+            }));
+        } catch (error) {
+            console.error("Failed to toggle item completion:", error);
+        }
+    };
+
+    const handleClearList = async () => {
+        try {
+            const itemsToClear = list.items.filter(item => item.is_completed);
+            const deletePromises = itemsToClear.map(item =>
+                axios.delete(`http://127.0.0.1:8000/api/houses/${houseId}/lists/${listId}/items/${item.id}/`, {
+                    headers: { 'Authorization': `Bearer ${tokens.access}` }
+                })
+            );
+
+            await Promise.all(deletePromises);
+
+            setList(prevList => ({
+                ...prevList,
+                items: prevList.items.filter(item => !item.is_completed)
+            }));
+        } catch (error) {
+            console.error("Failed to clear list:", error);
+        }
+    };
+
+    const handleDeleteItem = async (itemId) => {
+        try {
+            await axios.delete(`http://127.0.0.1:8000/api/houses/${houseId}/lists/${listId}/items/${itemId}/`, {
+                headers: { 'Authorization': `Bearer ${tokens.access}` }
+            });
+
+            setList(prevList => ({
+                ...prevList,
+                items: prevList.items.filter(item => item.id !== itemId)
+            }));
+        } catch (error) {
+            console.error("Failed to delete item:", error);
+        }
+    };
+    
+    const handleStartEdit = (item) => {
+        setEditingItemId(item.id);
+        setEditedItemName(item.description);
+        setEditedItemQuantity(item.amount); // Atualiza a quantidade ao iniciar a edição
+    };
+
+    const handleSaveEdit = async (itemId) => {
+        try {
+            const res = await axios.patch(`http://127.0.0.1:8000/api/houses/${houseId}/lists/${listId}/items/${itemId}/`, {
+                description: editedItemName,
+                amount: editedItemQuantity // Envia a quantidade atualizada
+            }, {
+                headers: { 'Authorization': `Bearer ${tokens.access}` }
+            });
+
+            setList(prevList => ({
+                ...prevList,
+                items: prevList.items.map(item =>
+                    item.id === itemId ? { ...item, description: res.data.description, amount: res.data.amount } : item
+                )
+            }));
+            setEditingItemId(null);
+            setEditedItemName('');
+            setEditedItemQuantity(1); // Reseta o estado da quantidade
+        } catch (error) {
+            console.error("Failed to save item:", error);
+        }
+    };
+    
+    const handleCancelEdit = () => {
+        setEditingItemId(null);
+        setEditedItemName('');
+        setEditedItemQuantity(1); // Reseta o estado da quantidade
     };
 
     if (!list) {
@@ -170,20 +265,92 @@ const ListPage = () => {
                 </div>
             </form>
             <div className="bg-white rounded-lg shadow overflow-hidden">
-                <div className="grid grid-cols-2 sm:grid-cols-3 p-4 border-b border-gray-200 font-semibold text-gray-700 bg-gray-100">
+                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 p-4 border-b border-gray-200 font-semibold text-gray-700 bg-gray-100">
                     <div>Item</div>
                     <div>Quantidade</div>
                     <div>Status</div>
+                    <div>Ações</div>
                 </div>
                 {list.items.length > 0 ? (
                     list.items.map(item => (
-                        <div key={item.id} className="grid grid-cols-2 sm:grid-cols-3 p-4 border-b border-gray-200 hover:bg-gray-50 transition-colors">
-                            <div className="text-gray-900 font-medium">{item.description}</div>
-                            <div className="text-gray-700">{item.amount}</div>
-                            <div>
-                                <span className={`px-2 py-1 text-xs leading-5 font-semibold rounded-full ${item.is_completed ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
+                        <div key={item.id} className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 p-4 border-b border-gray-200 hover:bg-gray-50 transition-colors">
+                            {editingItemId === item.id ? (
+                                <input
+                                    type="text"
+                                    value={editedItemName}
+                                    onChange={(e) => setEditedItemName(e.target.value)}
+                                    className="p-1 border rounded-md w-full"
+                                />
+                            ) : (
+                                <div className={`text-gray-900 font-medium ${item.is_completed ? 'line-through' : ''}`}>
+                                    {item.description}
+                                </div>
+                            )}
+                            {editingItemId === item.id ? (
+                                <input
+                                    type="number"
+                                    value={editedItemQuantity}
+                                    onChange={(e) => setEditedItemQuantity(parseInt(e.target.value, 10))}
+                                    className="p-1 border rounded-md w-full"
+                                />
+                            ) : (
+                                <div className="text-gray-700">{item.amount}</div>
+                            )}
+                            <div className="flex items-center">
+                                <input
+                                    type="checkbox"
+                                    checked={item.is_completed}
+                                    onChange={() => handleCompleteItem(item.id)}
+                                    className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                                />
+                                <span className={`ml-2 px-2 py-1 text-xs leading-5 font-semibold rounded-full ${item.is_completed ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
                                     {item.is_completed ? 'Comprado' : 'A Comprar'}
                                 </span>
+                            </div>
+                            <div className="flex items-center gap-2">
+                                {editingItemId === item.id ? (
+                                    <>
+                                        <button
+                                            onClick={() => handleSaveEdit(item.id)}
+                                            className="p-1 rounded-full text-green-600 hover:bg-green-100 transition-colors"
+                                            title="Salvar Edição"
+                                        >
+                                            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                                                <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                                            </svg>
+                                        </button>
+                                        <button
+                                            onClick={handleCancelEdit}
+                                            className="p-1 rounded-full text-red-600 hover:bg-red-100 transition-colors"
+                                            title="Cancelar Edição"
+                                        >
+                                            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                                                <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
+                                            </svg>
+                                        </button>
+                                    </>
+                                ) : (
+                                    <>
+                                        <button
+                                            onClick={() => handleStartEdit(item)}
+                                            className="p-1 rounded-full text-blue-600 hover:bg-blue-100 transition-colors"
+                                            title="Editar Item"
+                                        >
+                                            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                                                <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z" />
+                                            </svg>
+                                        </button>
+                                        <button
+                                            onClick={() => handleDeleteItem(item.id)}
+                                            className="p-1 rounded-full text-red-600 hover:bg-red-100 transition-colors"
+                                            title="Excluir Item"
+                                        >
+                                            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                                                <path fillRule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm6 0a1 1 0 012 0v6a1 1 0 11-2 0V8z" clipRule="evenodd" />
+                                            </svg>
+                                        </button>
+                                    </>
+                                )}
                             </div>
                         </div>
                     ))
@@ -192,6 +359,14 @@ const ListPage = () => {
                         <p>Nenhum item adicionado ainda.</p>
                     </div>
                 )}
+            </div>
+            <div className="mt-4">
+                <button
+                    onClick={handleClearList}
+                    className="w-full px-4 py-2 bg-red-600 text-white font-bold rounded-md hover:bg-red-700 transition-colors"
+                >
+                    Limpar Lista
+                </button>
             </div>
         </div>
     );
