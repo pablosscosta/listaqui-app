@@ -40,7 +40,8 @@ const ListPage = () => {
         e.preventDefault();
         try {
             const res = await axios.post(`http://127.0.0.1:8000/api/houses/${houseId}/lists/${listId}/items/`, {
-                ...newItem,
+                description: newItem.name,
+                amount: newItem.quantity,
                 list: listId
             }, {
                 headers: { 'Authorization': `Bearer ${tokens.access}` }
@@ -108,16 +109,16 @@ const ListPage = () => {
                 {list.items.length > 0 ? (
                     list.items.map(item => (
                         <div key={item.id} className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 p-4 border-b border-gray-200 hover:bg-gray-50 transition-colors">
-                            <div className="text-gray-900 font-medium">{item.name}</div>
-                            <div className="text-gray-700">{item.quantity}</div>
+                            <div className="text-gray-900 font-medium">{item.description}</div>
+                            <div className="text-gray-700">{item.amount}</div>
                             <div>
                                 <button className="text-indigo-600 hover:text-indigo-900 transition-colors">Ações</button>
                             </div>
                             <div className="hidden md:block text-gray-700">R$ {item.price ? item.price.toFixed(2) : '0.00'}</div>
                             <div className="hidden md:block text-gray-700">R$ {(item.price * item.quantity).toFixed(2)}</div>
                             <div className="hidden md:block">
-                                <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${item.is_purchased ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
-                                    {item.is_purchased ? 'Comprado' : 'A Comprar'}
+                                <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${item.is_completed ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
+                                    {item.is_completed ? 'Comprado' : 'A Comprar'}
                                 </span>
                             </div>
                         </div>
@@ -177,11 +178,11 @@ const ListPage = () => {
                 {list.items.length > 0 ? (
                     list.items.map(item => (
                         <div key={item.id} className="grid grid-cols-2 sm:grid-cols-3 p-4 border-b border-gray-200 hover:bg-gray-50 transition-colors">
-                            <div className="text-gray-900 font-medium">{item.name}</div>
-                            <div className="text-gray-700">{item.quantity}</div>
+                            <div className="text-gray-900 font-medium">{item.description}</div>
+                            <div className="text-gray-700">{item.amount}</div>
                             <div>
-                                <span className={`px-2 py-1 text-xs leading-5 font-semibold rounded-full ${item.is_purchased ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
-                                    {item.is_purchased ? 'Comprado' : 'A Comprar'}
+                                <span className={`px-2 py-1 text-xs leading-5 font-semibold rounded-full ${item.is_completed ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
+                                    {item.is_completed ? 'Comprado' : 'A Comprar'}
                                 </span>
                             </div>
                         </div>
