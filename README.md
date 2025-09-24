@@ -4,43 +4,62 @@
 Este é um **MVP (Produto Mínimo Viável)** de uma aplicação web full-stack para gerenciamento de listas de compras. O projeto foi desenhado com um escopo enxuto para validar as funcionalidades centrais antes de adicionar recursos mais complexos, como autenticação de usuários e colaboração.
 
 ### Tecnologias Utilizadas
-* **Backend:** Python com o framework **Django**.
-* **Frontend:** JavaScript com a biblioteca **React** e o bundler **Vite**.
+* **Backend:** Python com o framework **Django** e **Django REST Framework (DRF)**.
+* **Frontend:** JavaScript com a biblioteca **React (TSX)** e o bundler **Vite**.
 
-### Escopo do MVP
-O projeto nesta fase inicial foca em um fluxo de uso simples e direto, sem a necessidade de um sistema de usuários.
-* **Acesso:** Não há login. A aplicação funciona para um único usuário e gerencia uma única casa.
-* **Listas Automáticas:** Ao iniciar a aplicação, duas listas são criadas: "Mensal" e "Emergencial".
-* **CRUD de Itens:** O usuário pode adicionar, visualizar, editar e remover itens das listas.
-* **Marcar como Concluído:** Itens podem ser marcados como "comprados" ou finalizados.
+---
+
+### Funcionalidades Atuais do MVP (v1.0)
+A aplicação possui a funcionalidade central de gerenciamento de listas de compras totalmente implementada.
+
+* **Configuração Inicial:** Uma única **Casa** é criada automaticamente na primeira execução do `migrate`, juntamente com as listas **"Mensal"** e **"Emergencial"**.
+* **CRUD de Itens:** O usuário pode **Adicionar**, **Visualizar**, **Atualizar** (marcar como comprado) e **Deletar** itens em ambas as listas.
+* **Estrutura de API:** A comunicação é feita via endpoints RESTful.
+
+---
 
 ### Como Rodar o Projeto
 Este projeto é dividido em dois ambientes: backend (Django) e frontend (React). Ambos precisam ser configurados e executados separadamente.
 
 #### Backend (Django)
-1.  **Configuração do Ambiente:**
-    * Navegue até o diretório do backend.
-    * Crie e ative um ambiente virtual.
-    * Instale as dependências do Python:
-        ```bash
-        pip install -r requirements.txt
-        ```
-2.  **Execução:**
-    * Execute as migrações no banco de dados para garantir a criação inicial da Casa e das Listas:
-        ```bash
-        python manage.py migrate
-        ```
-    * Inicie o servidor Django:
-        ```bash
-        python manage.py runserver
-        ```
+1.  **Configuração do Ambiente:**
+    * Navegue até o diretório do backend.
+    * Crie e ative um ambiente virtual.
+    * Instale as dependências do Python:
+        ```bash
+        pip install -r requirements.txt
+        ```
+2.  **Execução:**
+    * Execute as migrações no banco de dados para garantir a criação inicial da Casa e das Listas:
+        ```bash
+        python manage.py migrate
+        ```
+    * Inicie o servidor Django:
+        ```bash
+        python manage.py runserver
+        ```
 
 #### Frontend (React com Vite)
-1.  **Configuração do Ambiente:**
-    * Navegue até o diretório do frontend.
-    * Instale as dependências do Node.js.
-2.  **Execução:**
-    * Inicie o servidor de desenvolvimento. O frontend estará disponível no navegador.
+1.  **Configuração do Ambiente:**
+    * Navegue até o diretório do frontend.
+    * Instale as dependências do Node.js:
+        ```bash
+        npm install
+        ```
+    * Instale o cliente HTTP (Axios) e verifique a configuração do **proxy** em `vite.config.js`:
+        ```bash
+        npm install axios
+        ```
+2.  **Execução:**
+    * Inicie o servidor de desenvolvimento. O frontend estará disponível no navegador.
+        ```bash
+        npm run dev
+        ```
+
+---
 
 ### Próximos Passos
-Após a aprovação deste `README.md`, o próximo passo é detalhar e implementar o modelo de dados para as listas e itens, bem como a definição das rotas da API.
+O próximo passo é finalizar a funcionalidade de gerenciamento da Casa e, em seguida, aplicar o design.
+
+1.  **Gerenciamento da Casa:** Implementar a funcionalidade de **Atualizar o nome da Casa** no Dashboard.
+2.  **UX/Design:** Estilização final da aplicação.
