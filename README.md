@@ -21,9 +21,19 @@ Este projeto é dividido em dois ambientes: backend (Django) e frontend (React).
 1.  **Configuração do Ambiente:**
     * Navegue até o diretório do backend.
     * Crie e ative um ambiente virtual.
-    * Instale as dependências do Python.
+    * Instale as dependências do Python:
+        ```bash
+        pip install -r requirements.txt
+        ```
 2.  **Execução:**
-    * Inicie o servidor Django. A API estará disponível.
+    * Execute as migrações no banco de dados para garantir a criação inicial da Casa e das Listas:
+        ```bash
+        python manage.py migrate
+        ```
+    * Inicie o servidor Django:
+        ```bash
+        python manage.py runserver
+        ```
 
 #### Frontend (React com Vite)
 1.  **Configuração do Ambiente:**
