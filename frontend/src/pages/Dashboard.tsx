@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
 import ListComponent from '../components/ListComponent';
+import HouseNameEditor from '../components/HouseNameEditor'; // Novo Import
 
 interface IItem {
   id: number;
@@ -55,7 +56,13 @@ const Dashboard: React.FC = () => {
 
   return (
     <div className="dashboard-container">
-      <h1>{house?.name || 'Dashboard da Casa'}</h1>
+      {house && (
+        <HouseNameEditor 
+          houseId={house.id}
+          initialName={house.name}
+          onNameUpdated={fetchHouseData} // Usa o mesmo callback para recarregar
+        />
+      )}
       <p>ID da Casa: {house?.id}</p>
 
       <h2>Minhas Listas</h2>
