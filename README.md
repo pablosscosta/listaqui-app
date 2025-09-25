@@ -59,7 +59,13 @@ Este projeto é dividido em dois ambientes: backend (Django) e frontend (React).
 ---
 
 ### Próximos Passos
-O próximo passo é finalizar a funcionalidade de gerenciamento da Casa e, em seguida, aplicar o design.
 
-1.  **Gerenciamento da Casa:** Implementar a funcionalidade de **Atualizar o nome da Casa** no Dashboard.
-2.  **UX/Design:** Estilização final da aplicação.
+O escopo funcional e visual do Produto Mínimo Viável (MVP) está **completamente concluído**.
+
+**Funcionalidades Implementadas:** CRUD de Itens, Edição do Nome da Casa e Layout responsivo de Dashboard.
+
+As próximas etapas seriam consideradas melhorias e expansão do projeto, fora do escopo original do MVP:
+
+1.  **Autenticação de Usuário:** Implementar login e registro.
+2.  **Colaboração:** Permitir que múltiplos usuários compartilhem a mesma Casa e Listas.
+3.  **Novas Funcionalidades:** Adicionar filtros e ordenação nas Listas.

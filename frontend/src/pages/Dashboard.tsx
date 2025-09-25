@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
 import ListComponent from '../components/ListComponent';
-import HouseNameEditor from '../components/HouseNameEditor'; // Novo Import
+import HouseNameEditor from '../components/HouseNameEditor';
 
 interface IItem {
   id: number;
@@ -60,19 +60,21 @@ const Dashboard: React.FC = () => {
         <HouseNameEditor 
           houseId={house.id}
           initialName={house.name}
-          onNameUpdated={fetchHouseData} // Usa o mesmo callback para recarregar
+          onNameUpdated={fetchHouseData}
         />
       )}
       <p>ID da Casa: {house?.id}</p>
 
       <h2>Minhas Listas</h2>
-      {house?.lists.map(list => (
-        <ListComponent 
-          key={list.id} 
-          list={list} 
-          onDataChange={fetchHouseData} 
-        />
-      ))}
+      <div className="lists-grid-wrapper">
+        {house?.lists.map(list => (
+          <ListComponent 
+            key={list.id} 
+            list={list} 
+            onDataChange={fetchHouseData} 
+          />
+        ))}
+      </div>
     </div>
   );
 };
