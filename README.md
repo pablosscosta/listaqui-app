@@ -22,39 +22,43 @@ A aplicação possui a funcionalidade central de gerenciamento de listas de comp
 Este projeto é dividido em dois ambientes: backend (Django) e frontend (React). Ambos precisam ser configurados e executados separadamente.
 
 #### Backend (Django)
-1.  **Configuração do Ambiente:**
-    * Navegue até o diretório do backend.
-    * Crie e ative um ambiente virtual.
-    * Instale as dependências do Python:
-        ```bash
-        pip install -r requirements.txt
-        ```
-2.  **Execução:**
-    * Execute as migrações no banco de dados para garantir a criação inicial da Casa e das Listas:
-        ```bash
-        python manage.py migrate
-        ```
-    * Inicie o servidor Django:
-        ```bash
-        python manage.py runserver
-        ```
+
+1.  **Configuração do Ambiente:**
+    * Navegue até o diretório do backend.
+    * Crie e ative um ambiente virtual.
+    * Instale as dependências do Python:
+        ```bash
+        pip install -r requirements.txt
+        ```
+
+2.  **Execução:**
+    * Execute as migrações no banco de dados para garantir a criação inicial da Casa e das Listas:
+        ```bash
+        python manage.py migrate
+        ```
+    * Inicie o servidor Django:
+        ```bash
+        python manage.py runserver
+        ```
 
 #### Frontend (React com Vite)
-1.  **Configuração do Ambiente:**
-    * Navegue até o diretório do frontend.
-    * Instale as dependências do Node.js:
-        ```bash
-        npm install
-        ```
-    * Instale o cliente HTTP (Axios) e verifique a configuração do **proxy** em `vite.config.js`:
-        ```bash
-        npm install axios
-        ```
-2.  **Execução:**
-    * Inicie o servidor de desenvolvimento. O frontend estará disponível no navegador.
-        ```bash
-        npm run dev
-        ```
+
+1.  **Configuração do Ambiente:**
+    * Navegue até o diretório do frontend.
+    * Instale as dependências do Node.js:
+        ```bash
+        npm install
+        ```
+    * Instale o cliente HTTP (Axios) e verifique a configuração do **proxy** em `vite.config.js`:
+        ```bash
+        npm install axios
+        ```
+
+2.  **Execução:**
+    * Inicie o servidor de desenvolvimento. O frontend estará disponível no navegador.
+        ```bash
+        npm run dev
+        ```
 
 ---
 
