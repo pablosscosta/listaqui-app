@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
 import ListComponent from '../components/ListComponent';
 import HouseNameEditor from '../components/HouseNameEditor';
+import { useAuth } from '../contexts/AuthContext';
 
 interface IItem {
   id: number;
@@ -22,6 +23,7 @@ interface IHouse {
 }
 
 const Dashboard: React.FC = () => {
+  const { user, logout } = useAuth();
   const [house, setHouse] = useState<IHouse | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
@@ -56,6 +58,13 @@ const Dashboard: React.FC = () => {
 
   return (
     <div className="dashboard-container">
+        <header>
+            {user && <span>Olá, {user.username}!</span>}
+            <button onClick={logout}>Sair</button>
+        </header>
+            
+            <h1>Seu Dashboard (Lista de Compras)</h1>
+
       {house && (
         <HouseNameEditor 
           houseId={house.id}

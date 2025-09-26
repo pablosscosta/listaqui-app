@@ -9,13 +9,11 @@ Este é um **MVP (Produto Mínimo Viável)** de uma aplicação web full-stack p
 
 ---
 
-### Funcionalidades da V2: Autenticação (Registro)
-A aplicação agora inclui a fundação para a autenticação multi-usuário. A V1 é o núcleo central de gerenciamento de listas.
-
-* **Configuração Inicial:** Uma única **Casa** é criada automaticamente na primeira execução do `migrate`, juntamente com as listas **"Mensal"** e **"Emergencial"**.
-* **CRUD de Itens:** O usuário pode **Adicionar**, **Visualizar**, **Atualizar** (marcar como comprado) e **Deletar** itens em ambas as listas.
-* **Estrutura de API:** A comunicação é feita via endpoints RESTful.
-* **Registro de Usuários:** Endpoint e interface inicial para a criação de novas contas, base para a funcionalidade multi-usuário.
+### Funcionalidades da V2: Autenticação (Sessões Seguras)
+A aplicação agora possui a fundação para o sistema multi-usuário com controle de acesso completo. As funcionalidades da V1 só podem ser acessadas por usuários autenticados.
+* **Registro de Usuários:** Endpoint e interface para a criação de novas contas.
+* **Login/Logout Seguro:** Implementação de Login e Logout utilizando **Cookies HTTP-only** para o Refresh Token (proteção contra XSS) e controle do Access Token no estado do React.
+* **Proteção de Rotas:** Utilização de um componente **PrivateRoute** para garantir que o Dashboard e as funcionalidades principais só sejam acessíveis após o Login.
 
 ---
 
@@ -71,6 +69,6 @@ O escopo funcional e visual do Produto Mínimo Viável (MVP) está **completamen
 
 As próximas etapas seriam consideradas melhorias e expansão do projeto, fora do escopo original do MVP:
 
-1. **Autenticação de Usuário:** Finalizar Login e Logout com JWT.
+1. **Manutenção de Sessão:** Implementar a lógica de interceptores do Axios e o **Refresh Automático** do Access Token para manter a sessão ativa.
 2.  **Colaboração:** Permitir que múltiplos usuários compartilhem a mesma Casa e Listas.
 3.  **Novas Funcionalidades:** Adicionar filtros e ordenação nas Listas.
