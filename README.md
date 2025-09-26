@@ -9,12 +9,13 @@ Este é um **MVP (Produto Mínimo Viável)** de uma aplicação web full-stack p
 
 ---
 
-### Funcionalidades Atuais do MVP (v1.0)
-A aplicação possui a funcionalidade central de gerenciamento de listas de compras totalmente implementada.
+### Funcionalidades da V2: Autenticação (Registro)
+A aplicação agora inclui a fundação para a autenticação multi-usuário. A V1 é o núcleo central de gerenciamento de listas.
 
 * **Configuração Inicial:** Uma única **Casa** é criada automaticamente na primeira execução do `migrate`, juntamente com as listas **"Mensal"** e **"Emergencial"**.
 * **CRUD de Itens:** O usuário pode **Adicionar**, **Visualizar**, **Atualizar** (marcar como comprado) e **Deletar** itens em ambas as listas.
 * **Estrutura de API:** A comunicação é feita via endpoints RESTful.
+* **Registro de Usuários:** Endpoint e interface inicial para a criação de novas contas, base para a funcionalidade multi-usuário.
 
 ---
 
@@ -70,6 +71,6 @@ O escopo funcional e visual do Produto Mínimo Viável (MVP) está **completamen
 
 As próximas etapas seriam consideradas melhorias e expansão do projeto, fora do escopo original do MVP:
 
-1.  **Autenticação de Usuário:** Implementar login e registro.
+1. **Autenticação de Usuário:** Finalizar Login e Logout com JWT.
 2.  **Colaboração:** Permitir que múltiplos usuários compartilhem a mesma Casa e Listas.
 3.  **Novas Funcionalidades:** Adicionar filtros e ordenação nas Listas.
