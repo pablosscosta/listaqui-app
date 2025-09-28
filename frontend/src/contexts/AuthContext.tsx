@@ -1,10 +1,10 @@
-import React, { createContext, useState, useContext, ReactNode } from 'react';
+import React, { createContext, useState, useContext, ReactNode, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import api, { setupAxiosInterceptors } from '../services/api';
 import { jwtDecode } from 'jwt-decode';
 
-const TOKEN_URL = '/api/token/';
-const LOGOUT_URL = '/api/auth/logout/';
+const TOKEN_URL = '/token/';
+const LOGOUT_URL = '/auth/logout/';
 
 interface User {
     user_id: number;
@@ -17,8 +17,8 @@ interface Tokens {
 }
 
 interface AuthContextType {
-    user: any;
-    tokens: any;
+    user: User | null;
+    tokens: Tokens | null;
     login: (username: string, password: string) => Promise<void>;
     logout: () => void;
 }
@@ -32,13 +32,12 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
     const login = async (username: string, password: string) => {
         try{
-            const response = await axios.post(TOKEN_URL, {
+            const response = await api.post(TOKEN_URL, {
                 username,
                 password,
             });
 
             const accessToken = response.data.access;
-
             const decodedUser: any = jwtDecode(accessToken);
 
             setTokens({ access: accessToken });
@@ -51,9 +50,10 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
             throw error;
         }
     };
+
     const logout = async () => {
         try {
-            await axios.post(LOGOUT_URL);
+            await api.post(LOGOUT_URL);
         } catch (error) {
             console.error('Erro ao chamar o endpoint de logout, mas limpando o estado local.', error);
         } finally {
@@ -62,6 +62,18 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
             navigate('/login', { replace: true });
         }
     };
+
+    // Configuração do Interceptor
+    useEffect(() => {
+        const getAccessToken = () => tokens?.access || null;
+        
+        setupAxiosInterceptors(
+            getAccessToken, 
+            setTokens, 
+            logout
+        );
+        
+    }, [tokens]); 
 
     const contextData: AuthContextType = {
         user,

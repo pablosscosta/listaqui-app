@@ -14,6 +14,7 @@ A aplicação agora possui a fundação para o sistema multi-usuário com contro
 * **Registro de Usuários:** Endpoint e interface para a criação de novas contas.
 * **Login/Logout Seguro:** Implementação de Login e Logout utilizando **Cookies HTTP-only** para o Refresh Token (proteção contra XSS) e controle do Access Token no estado do React.
 * **Proteção de Rotas:** Utilização de um componente **PrivateRoute** para garantir que o Dashboard e as funcionalidades principais só sejam acessíveis após o Login.
+* **Manutenção Automática da Sessão:** Implementação de um **Interceptor do Axios** que silenciosamente detecta a expiração do Access Token (curta validade), usa o Refresh Token (seguro no cookie) para obter uma nova chave e automaticamente retenta a requisição original. Isso garante que o usuário nunca seja desconectado sem motivo.
 
 ---
 
@@ -69,6 +70,6 @@ O escopo funcional e visual do Produto Mínimo Viável (MVP) está **completamen
 
 As próximas etapas seriam consideradas melhorias e expansão do projeto, fora do escopo original do MVP:
 
-1. **Manutenção de Sessão:** Implementar a lógica de interceptores do Axios e o **Refresh Automático** do Access Token para manter a sessão ativa.
+1. **Persistência e Polimento da Sessão:** Ajustar o Contexto para ler o Refresh Token ao carregar a página e adicionar um estado de loading (useAuth.loading) para evitar o "piscar" da tela em rotas privadas.
 2.  **Colaboração:** Permitir que múltiplos usuários compartilhem a mesma Casa e Listas.
 3.  **Novas Funcionalidades:** Adicionar filtros e ordenação nas Listas.
